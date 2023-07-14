@@ -222,7 +222,7 @@ exports.updateTask = async function (req, res, next) {
   }
 };
 
-exports.DeleteTask = async function (req, res, next) {
+exports.deleteTask = async function (req, res, next) {
   try {
     const taskId = req.params.taskId;
 

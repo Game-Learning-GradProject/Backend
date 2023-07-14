@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const control = require('../controller/TaskController');
+const taskController = require('../controller/TaskController');
 
 
 
-router.post('/AssignTask/:id',control.AssignTask );
-router.get('/TakeTask/:id',control.TakeTask );
-router.get('/tasks/:studentID', control.getTasksByStudentId);
-router.get('/:studentID/:taskID', control.getTaskById);
+router.post('/AssignTask/:id',taskController.AssignTask );
+router.get('/TakeTask/:id',taskController.TakeTask );
+router.get('/tasks/:studentID', taskController.getTasksByStudentId);
+router.get('/:studentID/:taskID', taskController.getTaskById);
+router.post('/updateTask/:taskId/:id', taskController.updateTask);
+router.delete('/deleteTask/:taskId', taskController.deleteTask);
 
 
 module.exports = router;
