@@ -50,4 +50,4 @@ mongoose.connect(
   () => console.log("connected to DB!")
 );
 
-app.listen(8080);
+app.listen(8000);

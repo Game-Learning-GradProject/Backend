@@ -76,23 +76,20 @@ TakeData = async function (req, res, next) {
   try {
     const user = await Data.findOne({ parentId: req.params.id });
 
-    if (!user) {
-      return res.status(404).json({
-        parent: {
-          status: "no iserting data for this id",
-        },
-      });
-    }
+    if (!user) return res.status(200).json([]);
 
     const data = await Data.find({
+      parentId: req.params.id,
       gradeNo: req.body.grade,
       subjectName: req.body.subject,
     });
-    if (data < 1) {
-      res.status(200).json([]);
-    } else {
-      res.status(200).send(data);
-    }
+
+    // if (data.length < 1) {
+    //   res.status(200).json([]);
+    // }
+    // else {
+    return res.status(200).send(data);
+    // }
   } catch (err) {
     console.error(err);
     res.status(500).json({
