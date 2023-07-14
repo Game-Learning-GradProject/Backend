@@ -41,7 +41,17 @@ InsertData = function (req, res, next) {
     const subjectName = req.body.subject;
 
     // Check if the data already exists for the specific parent
-    Data.findOne({ parentId, gradeNo, subjectName })
+    Data.findOne({
+      parentId,
+      gradeNo,
+      subjectName,
+      definitionInAc: req.body.wordar,
+      definitionInEn: req.body.worden,
+      sentence: req.body.sentence,
+      numbers: req.body.number,
+      choices: req.body.choices,
+      type: req.body.type,
+    })
       .then((existingData) => {
         if (existingData) {
           return res.status(400).json({
