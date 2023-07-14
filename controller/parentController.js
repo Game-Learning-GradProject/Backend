@@ -3,6 +3,7 @@ const Student = require("../models/studentdb");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const nodemailer = require('nodemailer');
+const mailgunTransport = require("nodemailer-mailgun-transport");
 const crypto = require('crypto');
 
 
@@ -24,7 +25,7 @@ const upload = multer({
   },
 });
 
-SignUp = function (req, res, next) {
+const SignUp = function (req, res, next) {
   User.findOne({ parentMail: req.body.mail })
     .select('parentName parentMail _id parentPhoneNumber parentAge')
     .then((result) => {
@@ -160,7 +161,7 @@ const SignIn = function (req, res, next) {
 
 
 
-ParentUpdate = function (req, res, next) {
+const updateParentInfo = function (req, res, next) {
   User.find({ _id: req.params.id })
     .then((user) => {
       User.find({ parentMail: req.body.newmail })
@@ -205,48 +206,52 @@ ParentUpdate = function (req, res, next) {
     });
 }
 
-
-
-/*
-
-const updatePassword = async (req, res, next) => {
+const forgotPassword = async (req, res, next) => {
   try {
-    // Find the user by their email
-    const user = await User.findOne({ parentMail: req.body.email });
+    // Get the base URL of your application
+    const baseUrl = `${req.protocol}://${req.headers.host}`;
 
-    // If the user doesn't exist, return an error
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    // Find the parent by their email
+    const parent = await User.findOne({ parentMail: req.body.email });
+    console.log(parent);
+
+    // If the parent doesn't exist, return an error
+    if (!parent) {
+      return res.status(404).json({ message: 'Parent not found' });
     }
 
     // Generate a random token
     const token = crypto.randomBytes(20).toString('hex');
 
-    // Update the user's reset token and expiration date
-    user.resetToken = token;
-    user.resetTokenExpiration = Date.now() + 3600000; // Token will expire in 1 hour
+    // Update the parent's reset token and expiration date
+    parent.resetToken = token;
+    parent.resetTokenExpiration = Date.now() + 1800000; // Token will expire in 1 hour
 
-    // Save the user's updated data
-    await user.save();
-
-    // Send an email to the user with a link to reset their password
+    // Save the parent's updated data
+    await parent.save();
+    console.log(parent);
+    // Send an email to the parent with a link to reset their password
     const transporter = nodemailer.createTransport({
-      service: 'Gmail',
+      // Configure your email provider here
+      // For example, using Gmail SMTP:
+      host: 'smtp.eu.mailgun.org',
+      port: '465',
+      secure: true, // For SSL
       auth: {
-        user: 'your_email_address@gmail.com',
-        pass: 'your_email_password',
+        user: 'postmaster@mg.gamelearning.me',
+        pass: 'af6dc4f27a08291aa50f3035f5b4be2a-262b213e-20b59c7b',
       },
     });
 
     const mailOptions = {
-      from: 'your_email_address@gmail.com',
-      to: user.parentMail,
+      from: 'noreply@mg.gamelearning.me',
+      to: parent.parentMail,
       subject: 'Password Reset Request',
       html: `
         <p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
         <p>Please click on the following link, or paste it into your browser to complete the process:</p>
-        <a href="http://${req.headers.host}/reset/${token}">Reset Password</a>
-        <p>This link will expire in 1 hour.</p>
+        <a href="${baseUrl}/parent/reset-password/${token}">Reset Password</a>
+        <p>This link will expire in 30 minutes.</p>
         <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
       `,
     };
@@ -260,10 +265,41 @@ const updatePassword = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
-*/
+
+const resetPassword = async (req, res, next) => {
+  try {
+    // Find the parent by their reset token and check the expiration date
+    const parent = await User.findOne({
+      resetToken: req.params.token,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+    
+    // If the parent doesn't exist or the reset token has expired, return an error
+    if (!parent) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    // Update the parent's password
+    const parentPassword = req.body.pass;
+    console.log(parentPassword);
+    const hashedPassword = await bcrypt.hash(parentPassword, 10);
+    parent.parentPassword = hashedPassword;
+    parent.resetToken = undefined;
+    parent.resetTokenExpiration = undefined;
+
+    // Save the parent's updated data
+    await parent.save();
+
+    // Return a success message
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error) {
+    // Return an error message
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
-deleteAccount = function (req, res, next) {
+const deleteAccount = function (req, res, next) {
   User.findOneAndDelete({ _id: req.params.id })
     .then((result) => {
       res.status(202).json({
@@ -280,10 +316,11 @@ deleteAccount = function (req, res, next) {
 
 
 module.exports = {
-  SignIn: SignIn,
-  SignUp: SignUp,
-  ParentUpdate: ParentUpdate,
-  //UpdatePassword: UpdatePassword,
-  deleteAccount: deleteAccount,
-  upload: upload
+  SignIn,
+  SignUp,
+  updateParentInfo,
+  forgotPassword,
+  resetPassword,
+  deleteAccount,
+  upload,
 };

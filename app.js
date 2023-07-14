@@ -1,5 +1,8 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
+const port = process.env.PORT || 8080;
+const dbUrl = process.env.DB_URL
 const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -16,7 +19,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin",  "http://localhost:8080");
+//   res.header("Access-Control-Allow-Origin",  "http://localhost:4000");
 //   res.header("Access-Control-Allow-Credentials", true);
 //   res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,PATCH");
 //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -38,14 +41,19 @@ app.use("/Task", Task);
 app.use("/data", data);
 app.use("/feedback", feedback);
 
-mongoose.connect(
-  //"mongodb://localhost:27017",
-  "mongodb+srv://ahmed:7IxlE70oZXGK8WVz@cluster0.urdmbgm.mongodb.net/questions?retryWrites=true&w=majority",
-  {
-    useNewUrlparser: true,
-    useUnifiedTopology: true,
-  },
-  () => console.log("connected to DB!")
-);
+mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to the Database');
+  })
+  .catch((error) => {
+    console.error('Database connection error:', error);
+  });
 
-app.listen(8080);
+
+app.listen(port, (error) => {
+  if (error) {
+    console.error('Server startup error:', error);
+  } else {
+    console.log(`Server listening on port ${port}`);
+  }
+});

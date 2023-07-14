@@ -37,7 +37,16 @@ const parentSchema = new mongoose.Schema({
     type: String,
     required: false,
     trim: true
-  }
+  },
+  resetToken: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  resetTokenExpiration: {
+    type: Date,
+    required: false,
+  },
 }, {
   timestamps: true // Adds createdAt and updatedAt fields to the document
 });

@@ -14,7 +14,7 @@ router.post('/StudentLogIn', control.StudentSignIn);
 router.patch('/StudenUpdateInfo/:id', control.upload.single('image'),control.StudentUpdateInfo);
 router.patch('/StudentUpdatePassword/:id',control.UpdatePassword);
 
-router.delete('/SdeleteAccount/:id',control.deleteAccount);
+router.delete('/deleteStudent/:id',control.deleteAccount);
 
 
 

@@ -13,6 +13,4 @@ router.post('/InsertData/:id',control.upload.single('image'),control.InsertData 
 router.post('/TakeData/:id', control.TakeData);
 router.patch('/FSEupdateQuesttion/:id',control.UpdateData);
 router.delete('/FSEdeleteQuesttion/:id',control.DeleteData);
-router.post('/feedback',control.FSEPOSTQuestionsFeedback);
-router.get('/feedback/:child_id',control.FSEGETQuestionsFeedback);
 module.exports = router;

@@ -2,21 +2,20 @@ const express = require('express');
 const { execMap } = require('nodemon/lib/config/defaults');
 const router = express.Router();
 
-const control = require('../controller/parentController');
+const parentController = require('../controller/parentController');
 const { updateMany } = require('../models/parentdb');
 
 
 
 
 
-router.post('/create', control.SignUp );
+router.post('/create', parentController.SignUp );
 
-router.post('/login', control.SignIn);
-router.patch('/ParentUpdateInfo/:id', control.upload.single('image'),control.ParentUpdate);
-
-//router.patch('/ParentUpdatePassword/:id',control.UpdatePassword);
-
-router.delete('/deleteAccount/:id',control.deleteAccount);
+router.post('/login', parentController.SignIn);
+router.patch('/ParentUpdateInfo/:id', parentController.upload.single('image'),parentController.updateParentInfo);
+router.delete('/deleteAccount/:id',parentController.deleteAccount);
+router.post('/forgot-password', parentController.forgotPassword);
+router.post('/reset-password/:token', parentController.resetPassword);
 
 
 

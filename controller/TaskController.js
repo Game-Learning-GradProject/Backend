@@ -83,7 +83,7 @@ exports.TakeTask = function (req, res, next) {
   })
     .then((tasks) => {
       if (tasks.length < 1) {
-        return res.status(404).json({
+        return res.status(200).json({
           status: "No tasks found for this student ID.",
         });
       }
@@ -184,7 +184,21 @@ exports.updateTask = async function (req, res, next) {
         message: "Missing required fields",
       });
     }
+    const task = await Task.findOne({
+      studentID: req.params.id,
+      taskNumber: taskno,
+    })
+    if (!task) {
+      return res.status(200).json({
+        message: "Task not found",
+      });
+    }
 
+    if(task.done.find(done => done === true )){
+      return res.status(200).json({
+        message: "This task has already been played in at least one game and cannot be updated",
+      });
+    }
     const updatedTask = await Task.findOneAndUpdate(
       {
         studentID: req.params.id,
@@ -203,13 +217,7 @@ exports.updateTask = async function (req, res, next) {
         new: true,
       }
     );
-
-    if (!updatedTask) {
-      return res.status(404).json({
-        message: "Task not found",
-      });
-    }
-
+    
     res.status(200).json({
       message: "Task updated successfully",
       updatedTask,
@@ -227,7 +235,7 @@ exports.deleteTask = async function (req, res, next) {
     const taskId = req.params.taskId;
 
     const result = await Task.deleteOne({ _id: taskId });
-
+    // console.log(result);
     if (result.deletedCount === 0) {
       return res.status(404).json({
         message: "Task not found",
@@ -253,7 +261,7 @@ exports.getTasksByStudentId = async (req, res) => {
     );
     if (tasks.length === 0) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "There is no tasks for this student." });
     }
 
@@ -274,7 +282,7 @@ exports.getTaskById = async (req, res) => {
   try {
     const task = await Task.findOne({ taskID });
     if (!task) {
-      res.status(404).json({ message: "This task isn't available" });
+      res.status(200).json({ message: "This task isn't available" });
     }
 
     res.json(task);
@@ -285,8 +293,3 @@ exports.getTaskById = async (req, res) => {
     });
   }
 };
-// module.exports = {
-//   AssignTask: AssignTask,
-//   TakeTask: TakeTask,
-//   getTasksByStudentId: this.getTasksByStudentId,
-// };

@@ -72,7 +72,7 @@ InsertData = function (req, res, next) {
           .save()
           .then((inserting) => {
             res.status(200).json({
-              status: 'Question inserted successfully',
+              status: 'Question inserted successfully.',
             });
           })
           .catch((err) => {
@@ -99,7 +99,7 @@ TakeData = async function (req, res, next) {
     if (!user) {
       return res.status(404).json({
         parent: {
-          status: "no iserting data for this id",
+          status: "There is no user with such ID.",
         },
       });
     }
@@ -116,7 +116,7 @@ TakeData = async function (req, res, next) {
   } catch (err) {
     console.error(err);
     res.status(500).json({
-      status: "Error fetching data",
+      status: "Error fetching data.",
       error: err.message,
     });
   }
@@ -144,13 +144,13 @@ UpdateData = function (req, res, next) {
   Data.findByIdAndUpdate(req.params.dataId, updateData, { new: true })
     .then((updatedData) => {
       res.status(200).json({
-        message: "Data updated successfully",
+        message: "Data updated successfully.",
         updatedData: updatedData,
       });
     })
     .catch((err) => {
       res.status(404).json({
-        message: "Error updating data",
+        message: "Error updating data.",
         error: err,
       });
     });
@@ -161,54 +161,21 @@ DeleteData = function (req, res, next) {
     .then((deletedData) => {
       if (deletedData) {
         res.status(200).json({
-          message: "Data deleted successfully",
+          message: "Data deleted successfully.",
           deletedData: deletedData,
         });
       } else {
         res.status(404).json({
-          message: "Data not found",
+          message: "Data not found.",
         });
       }
     })
     .catch((err) => {
       res.status(404).json({
-        message: "Error deleting data",
+        message: "Error deleting data.",
         error: err,
       });
     });
-};
-
-FSEPOSTQuestionsFeedback = function (req, res, next) {
-  const FbQuestion = new FBQuestion(req.body);
-  console.log(
-    "🚀 ~ file: FirstStadgeEnConrtoller.js:124 ~ FbQuestion",
-    FbQuestion
-  );
-
-  FbQuestion.save((err) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(200).send("Feedback inserted successfully!");
-    }
-  });
-};
-
-FSEGETQuestionsFeedback = function (req, res, next) {
-  const child_id = req.params.child_id;
-  FBQuestion.find({ child_id }, function (err, doc) {
-    if (err) {
-      return next(err);
-    }
-
-    if (!doc) {
-      return res.status(404).send({ error: "Questions feedback not found!" });
-    }
-
-    console.log(doc);
-    // Send the questions array as the response
-    res.status(200).json(doc);
-  });
 };
 
 module.exports = {
@@ -217,6 +184,4 @@ module.exports = {
   UpdateData: UpdateData,
   DeleteData: DeleteData,
   upload: upload,
-  FSEPOSTQuestionsFeedback: FSEPOSTQuestionsFeedback,
-  FSEGETQuestionsFeedback: FSEGETQuestionsFeedback,
 };
