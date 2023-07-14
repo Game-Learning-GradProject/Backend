@@ -36,35 +36,55 @@ InsertData = function (req, res, next) {
     });
     if (error) return res.status(400).send(error.details[0].message);
 
-    let dataObj = {
-      parentId: req.params.id,
-      gradeNo: req.body.grade,
-      subjectName: req.body.subject,
-      definitionInAc: req.body.wordar,
-      definitionInEn: req.body.worden,
-      sentence: req.body.sentence,
-      numbers: req.body.number,
-      choices: req.body.choices ? req.body.choices : [],
-      type: req.body.type ? req.body.type : "word",
-    };
+    const parentId = req.params.id;
+    const gradeNo = req.body.grade;
+    const subjectName = req.body.subject;
 
-    // If there is a file in the request, add the imageUrl to the data object
-    if (req.file) {
-      dataObj.imageUrl = req.file.path;
-    }
+    // Check if the data already exists for the specific parent
+    Data.findOne({ parentId, gradeNo, subjectName })
+      .then((existingData) => {
+        if (existingData) {
+          return res.status(400).json({
+            message: 'Data already exists for this parent.',
+          });
+        }
 
-    const data = new Data(dataObj);
+        let dataObj = {
+          parentId: parentId,
+          gradeNo: gradeNo,
+          subjectName: subjectName,
+          definitionInAc: req.body.wordar,
+          definitionInEn: req.body.worden,
+          sentence: req.body.sentence,
+          numbers: req.body.number,
+          choices: req.body.choices ? req.body.choices : [],
+          type: req.body.type ? req.body.type : 'word',
+        };
 
-    data
-      .save()
-      .then((inserting) => {
-        res.status(200).json({
-          status: "inserting question succssufully",
-        });
+        // If there is a file in the request, add the imageUrl to the data object
+        if (req.file) {
+          dataObj.imageUrl = req.file.path;
+        }
+
+        const data = new Data(dataObj);
+
+        data
+          .save()
+          .then((inserting) => {
+            res.status(200).json({
+              status: 'Question inserted successfully',
+            });
+          })
+          .catch((err) => {
+            res.status(404).json({
+              message: err,
+            });
+          });
       })
       .catch((err) => {
-        res.status(404).json({
-          massage: err,
+        res.status(500).json({
+          message: 'An error occurred while checking for existing data.',
+          error: err,
         });
       });
   } catch (error) {
