@@ -1,8 +1,8 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
-const dbUrl = process.env.DB_URL
+const dbUrl = process.env.DB_URL;
 const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -41,18 +41,18 @@ app.use("/Task", Task);
 app.use("/data", data);
 app.use("/feedback", feedback);
 
-mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log('Connected to the Database');
+    console.log("Connected to the Database");
   })
   .catch((error) => {
-    console.error('Database connection error:', error);
+    console.error("Database connection error:", error);
   });
-
 
 app.listen(port, (error) => {
   if (error) {
-    console.error('Server startup error:', error);
+    console.error("Server startup error:", error);
   } else {
     console.log(`Server listening on port ${port}`);
   }
