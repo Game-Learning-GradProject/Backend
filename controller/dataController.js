@@ -45,7 +45,7 @@ InsertData = function (req, res, next) {
       .then((existingData) => {
         if (existingData) {
           return res.status(400).json({
-            message: 'Data already exists for this parent.',
+            message: "Data already exists for this parent.",
           });
         }
 
@@ -58,7 +58,7 @@ InsertData = function (req, res, next) {
           sentence: req.body.sentence,
           numbers: req.body.number,
           choices: req.body.choices ? req.body.choices : [],
-          type: req.body.type ? req.body.type : 'word',
+          type: req.body.type ? req.body.type : "word",
         };
 
         // If there is a file in the request, add the imageUrl to the data object
@@ -72,7 +72,7 @@ InsertData = function (req, res, next) {
           .save()
           .then((inserting) => {
             res.status(200).json({
-              status: 'Question inserted successfully',
+              status: "Question inserted successfully",
             });
           })
           .catch((err) => {
@@ -83,7 +83,7 @@ InsertData = function (req, res, next) {
       })
       .catch((err) => {
         res.status(500).json({
-          message: 'An error occurred while checking for existing data.',
+          message: "An error occurred while checking for existing data.",
           error: err,
         });
       });
@@ -94,24 +94,21 @@ InsertData = function (req, res, next) {
 
 TakeData = async function (req, res, next) {
   try {
-    const user = await Data.findOne({ parentId: req.params.id });
+    // const user = await Data.findOne({ parentId: req.params.id });
 
-    if (!user) {
-      return res.status(404).json({
-        parent: {
-          status: "no iserting data for this id",
-        },
-      });
-    }
+    // if (!user) {
+    //   return res.status(200).json([]);
+    // }
 
     const data = await Data.find({
+      parentId: req.params.id,
       gradeNo: req.body.grade,
       subjectName: req.body.subject,
     });
-    if (data < 1) {
+    if (data.length < 1) {
       res.status(200).json([]);
     } else {
-      res.status(200).send(data);
+      return res.status(200).send(data);
     }
   } catch (err) {
     console.error(err);
