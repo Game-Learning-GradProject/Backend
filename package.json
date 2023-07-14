@@ -18,7 +18,6 @@
     "express": "^4.18.2",
     "faker": "^6.6.6",
     "file-system": "^2.2.2",
-    "firebase": "^9.19.1",
     "fs": "^0.0.1-security",
     "joi": "^17.9.2",
     "joi-objectid": "^4.0.2",
