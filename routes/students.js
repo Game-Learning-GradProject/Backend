@@ -11,8 +11,8 @@ const { updateMany } = require('../models/studentdb');
 
 router.post('/AddChild/:id', control.AddChild );
 router.post('/StudentLogIn', control.StudentSignIn);
-router.patch('/StudenUpdateInfo/:id', control.upload.single('image'),control.StudentUpdateInfo);
-router.patch('/StudentUpdatePassword/:id',control.UpdatePassword);
+router.post('/StudenUpdateInfo/:id', control.upload.single('image'),control.StudentUpdateInfo);
+router.post('/StudentUpdatePassword/:id',control.UpdatePassword);
 router.delete('/deleteStudent/:id',control.deleteAccount);
 
 

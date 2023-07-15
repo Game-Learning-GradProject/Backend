@@ -146,7 +146,7 @@ const StudentSignIn = async (req, res, next) => {
   }
 };
 
-StudentUpdateInfo = function (req, res, next) {
+const StudentUpdateInfo = function (req, res, next) {
   Student.findOne({ _id: req.params.id })
     .then((student) => {
       Student.findOne({ studentUserName: req.body.newusername })
@@ -189,7 +189,7 @@ StudentUpdateInfo = function (req, res, next) {
     });
 };
 
-UpdatePassword = function (req, res, next) {
+const UpdatePassword = function (req, res, next) {
   Student.findById(req.params.id)
     .then((student) => {
       if (!student) {
@@ -227,7 +227,7 @@ UpdatePassword = function (req, res, next) {
     });
 };
 
-deleteAccount = function (req, res, next) {
+const deleteAccount = function (req, res, next) {
   Student.findOneAndDelete({ _id: req.params.id })
     .then((resualt) => {
       res.status(202).json({
