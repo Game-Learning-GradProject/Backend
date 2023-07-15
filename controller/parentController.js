@@ -250,7 +250,7 @@ const forgotPassword = async (req, res, next) => {
       html: `
         <p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
         <p>Please click on the following link, or paste it into your browser to complete the process:</p>
-        <a href="${baseUrl}/parent/reset-password/${token}">Reset Password</a>
+        <a href="${baseUrl}/resetPassword/${token}">Reset Password</a>
         <p>This link will expire in 30 minutes.</p>
         <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
       `,
