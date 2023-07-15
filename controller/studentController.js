@@ -159,9 +159,10 @@ const StudentUpdateInfo = function (req, res, next) {
             const studentInfo = {
               studentUserName: req.body.newusername,
               studentName: req.body.newname,
-              studentstage: req.body.newstage,
-              studentPic: req.file.path,
+              studentGrade: req.body.newStudentGrade,
+              // studentPic: req.file.path,
             };
+            console.log(studentInfo)
 
             Student.updateOne({ _id: req.params.id }, studentInfo)
               .then(() => {

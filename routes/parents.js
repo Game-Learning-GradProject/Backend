@@ -12,7 +12,7 @@ const { updateMany } = require('../models/parentdb');
 router.post('/create', parentController.SignUp );
 
 router.post('/login', parentController.SignIn);
-router.patch('/ParentUpdateInfo/:id', parentController.upload.single('image'),parentController.updateParentInfo);
+router.patch('/updateParentInfo/:id', parentController.upload.single('image'),parentController.updateParentInfo);
 router.delete('/deleteAccount/:id',parentController.deleteAccount);
 router.post('/forgot-password', parentController.forgotPassword);
 router.post('/reset-password/:token', parentController.resetPassword);
