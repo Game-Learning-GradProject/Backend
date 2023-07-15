@@ -267,7 +267,7 @@ exports.getAllFeedbackWithData = async (req, res) => {
 function getModifiedData(data) {
   const { definitionInEn, numbers, sentence } = data;
 
-  if (data.subjectName === ("english" || "en")) {
+  if (data.subjectName === ("english" || "en" || "arabic")) {
     if (!sentence) {
       return { word: definitionInEn };
     } else if (!definitionInEn) {
@@ -280,8 +280,6 @@ function getModifiedData(data) {
     }
   } else if (data.subjectName === "math") {
     return numbers;
-  } else if (data.subjectName === "arabic") {
-    return { sentence };
   }
 }
 
