@@ -146,48 +146,62 @@ const StudentSignIn = async (req, res, next) => {
   }
 };
 
-const StudentUpdateInfo = function (req, res, next) {
-  Student.findOne({ _id: req.params.id })
-    .then((student) => {
-      Student.findOne({ studentUserName: req.body.newusername })
-        .then((result) => {
-          if (result && result._id != req.params.id) {
-            res.status(404).json({
-              message: "Username already exists",
-            });
-          } else {
-            const studentInfo = {
-              studentUserName: req.body.newusername,
-              studentName: req.body.newname,
-              studentGrade: req.body.newStudentGrade,
-              // studentPic: req.file.path,
-            };
-            console.log(studentInfo)
+const StudentUpdateInfo = async function (req, res, next) {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) return res.status(400).send("no student wit such id");
 
-            Student.updateOne({ _id: req.params.id }, studentInfo)
-              .then(() => {
-                res.status(202).json({
-                  message: "Updated successfully",
-                });
-              })
-              .catch((err) => {
-                res.status(404).json({
-                  message: err,
-                });
-              });
-          }
-        })
-        .catch((err) => {
-          res.status(404).json({
-            message: "Error finding username",
-          });
-        });
+    const updatedData = { ...req.body };
+    await Student.findByIdAndUpdate(req.params.id, updatedData, {
+      new: true,
     })
-    .catch((err) => {
-      res.status(404).json({
-        message: "Error finding student ID",
-      });
-    });
+      .then((result) => res.status(200).send(result))
+      .catch((err) => res.status(500).send(err));
+  } catch (err) {
+    res.status(500).send(err);
+  }
+
+  // Student.findOne({ _id: req.params.id })
+  //   .then((student) => {
+  //     Student.findOne({ studentUserName: req.body.newusername })
+  //       .then((result) => {
+  //         if (result && result._id != req.params.id) {
+  //           res.status(404).json({
+  //             message: "Username already exists",
+  //           });
+  //         } else {
+  //           const studentInfo = {
+  //             studentUserName: req.body.newusername,
+  //             studentName: req.body.newname,
+  //             studentGrade: req.body.newStudentGrade,
+  //             // studentPic: req.file.path,
+  //           };
+  //           console.log(studentInfo)
+
+  //           Student.updateOne({ _id: req.params.id }, studentInfo)
+  //             .then(() => {
+  //               res.status(202).json({
+  //                 message: "Updated successfully",
+  //               });
+  //             })
+  //             .catch((err) => {
+  //               res.status(404).json({
+  //                 message: err,
+  //               });
+  //             });
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         res.status(404).json({
+  //           message: "Error finding username",
+  //         });
+  //       });
+  //   })
+  //   .catch((err) => {
+  //     res.status(404).json({
+  //       message: "Error finding student ID",
+  //     });
+  //   });
 };
 
 const UpdatePassword = function (req, res, next) {
