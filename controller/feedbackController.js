@@ -280,6 +280,8 @@ function getModifiedData(data) {
     }
   } else if (data.subjectName === "math") {
     return numbers;
+  } else if (data.subjectName === "arabic") {
+    return { sentence };
   }
 }
 
